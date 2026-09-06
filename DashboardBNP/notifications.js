@@ -16,6 +16,8 @@
   const MAX_TOASTS = 4;
   const TOAST_DURATION = 5000;     // 5 seconds
   const SCAN_INTERVAL = 60000;     // 60 seconds
+  const TOAST_STAGGER = 700;       // Minimum gap between two toasts appearing
+  const MAX_QUEUED_TOASTS = 6;     // Backlog shown as toasts; the rest go to the bell only
 
   // ── Alert Type Definitions ─────────────────────────────────
   const ALERT_TYPES = {
@@ -272,17 +274,48 @@
     }
   }
 
+  // ── Toast Queue ─────────────────────────────────
+  // A scan can raise dozens of alerts in one pass. Releasing them at a
+  // steady pace keeps the stack within MAX_TOASTS and each toast on
+  // screen long enough to read; the bell dropdown remains the full record.
+  const toastQueue = [];
+  let toastPumpTimer = null;
+
+  function enqueueToast(notification) {
+    toastQueue.push(notification);
+    // A full book scanned for the first time would otherwise trickle for
+    // minutes, so keep only the most recent alerts.
+    if (toastQueue.length > MAX_QUEUED_TOASTS) {
+      toastQueue.splice(0, toastQueue.length - MAX_QUEUED_TOASTS);
+    }
+    // Nothing in flight: show this one straight away so single events
+    // (a user action, one new breach) still feel immediate.
+    if (toastPumpTimer === null) pumpToastQueue();
+  }
+
+  function pumpToastQueue() {
+    const next = toastQueue.shift();
+    if (next) showToast(next);
+    toastPumpTimer = setTimeout(function () {
+      toastPumpTimer = null;
+      if (toastQueue.length > 0) pumpToastQueue();
+    }, TOAST_STAGGER);
+  }
+
   // ── Toast Notifications ────────────────────────────────────
   function showToast(notification) {
     const container = document.getElementById("notifToastContainer");
     if (!container) return;
 
-    // Limit visible toasts
-    const existing = container.querySelectorAll(".notif-toast");
-    if (existing.length >= MAX_TOASTS) {
-      const oldest = existing[0];
-      oldest.classList.add("notif-toast-exit");
-      setTimeout(() => oldest.remove(), 300);
+    // Limit visible toasts. A toast already animating out still sits in
+    // the DOM for a moment, so it must not count towards the limit, and a
+    // burst can need more than one eviction to get back under it.
+    const existing = Array.prototype.filter.call(
+      container.querySelectorAll(".notif-toast"),
+      (t) => !t.classList.contains("notif-toast-exit")
+    );
+    for (let i = 0; i <= existing.length - MAX_TOASTS; i++) {
+      dismissToast(existing[i]);
     }
 
     const alertDef = ALERT_TYPES[notification.type] || ALERT_TYPES["high-risk"];
@@ -427,7 +460,7 @@
     if (newAlerts.length > 0) {
       newAlerts.forEach(function (n) {
         notifications.push(n);
-        showToast(n);
+        enqueueToast(n);
       });
       updateBadge();
       if (dropdownOpen) renderDropdown();
@@ -465,7 +498,7 @@
       var msg = userName + " — " + actionLabel + " on " + txId;
       var notif = createNotification(txId, "user-action", msg);
       notifications.push(notif);
-      showToast(notif);
+      enqueueToast(notif);
       updateBadge();
       if (dropdownOpen) renderDropdown();
     };
