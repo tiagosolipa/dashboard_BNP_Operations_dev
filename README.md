@@ -27,27 +27,23 @@ Designed for operations teams who need to triage and resolve issues in real time
 
 - Asset Type, Client, Cut-Off Window, Cut-Off Time Interval, Workflow Stage
 
-## 📖 Documentation
-
-Detailed feature documentation is available in the [`docs/`](docs/) folder:
-
-| # | Document | Description |
-|---|----------|-------------|
-| 1 | [Overview & Layout](docs/01-overview-and-layout.md) | Dashboard layout, header, live clock, user profiles, filter bar, and data model |
-| 2 | [KPI Cards & Stage Hotspots](docs/02-kpi-cards-and-stage-hotspots.md) | All 8 KPI cards, click-to-filter behaviour, and stage hotspot indicators |
-| 3 | [Risk & Alert Monitor](docs/03-risk-and-alert-monitor.md) | Alert table columns, sorting, risk score filtering, and all action buttons |
-| 4 | [Transaction Register](docs/04-transaction-register.md) | Full transaction table, search, pagination, columns, and row highlighting |
-| 5 | [Transaction Detail Modal](docs/05-transaction-detail-modal.md) | Modal metadata grid, workflow timeline, actions, and activity history |
-| 6 | [Notification System](docs/06-notification-system.md) | Bell icon, dropdown, toast pop-ups, all 7 alert types, and deduplication |
-| 7 | [Risk Score Methodology](docs/07-risk-score-methodology.md) | Risk score formula, components, thresholds, examples, and dynamic recalculation |
-
 ## 📂 How to Run Locally
 
-1. Download the ZIP file of this repository (via the green **Code** button above).
-2. Extract the files.
-3. Open `index.html` in any web browser.
+Clone the repository (or download the ZIP via the green **Code** button above), then either:
+
+- Open `DashboardBNP/index.html` directly in any browser, or
+- Serve the folder over HTTP, which is closer to how it is deployed:
+
+  ```bash
+  cd DashboardBNP
+  python -m http.server 8765
+  ```
+
+  Then visit <http://127.0.0.1:8765/index.html>.
+
+There is no build step and no dependencies — the dashboard is plain HTML, CSS and JavaScript.
 
 ## Tech Stack
 
-- JavaScript · Python · CSS · HTML
+- Vanilla JavaScript · CSS · HTML — no framework, no build step
 - Built with AI-assisted development using Google Antigravity
