@@ -190,6 +190,26 @@
     <!-- STAGE ERRORS PANEL -->
     <div class="stage-errors-panel" id="stageErrorsPanel"></div>
 
+    <!-- PREDICTIVE OPERATIONS — FORWARD-LOOKING LAYER -->
+    <div class="predict-section" id="predictSection">
+      <div class="predict-header">
+        <h2 class="section-title">◈ Predictive Operations</h2>
+        <span class="predict-badge" id="predictBadge">—</span>
+        <span class="ops-section-hint">Forecast from stage duration vs. time to cut-off · not yet alerting</span>
+        <div class="predict-header-right">
+          <span class="predict-hz-label">Horizon</span>
+          <div class="predict-hz-group" id="predictHorizon">
+            <button class="predict-hz" data-h="60">1h</button>
+            <button class="predict-hz active" data-h="120">2h</button>
+            <button class="predict-hz" data-h="240">4h</button>
+          </div>
+          <button class="risk-info-btn" onclick="togglePredictPopover(this)" title="How are these predicted?">&#9432;</button>
+        </div>
+      </div>
+      <div class="predict-cards" id="predictCards"></div>
+      <div class="predict-watchlist" id="predictWatchlist"></div>
+    </div>
+
     <!-- RISK & ALERT MONITOR — PRIMARY WORKSPACE -->
     <div class="alerts-section ops-primary-section">
       <div class="alerts-header">
@@ -259,6 +279,8 @@
         <button class="modal-close" id="modalClose">✕</button>
       </div>
       <div class="modal-meta modal-meta-3row" id="modalMeta"></div>
+      <div class="modal-section-title">&#9678; Predictive Forecast</div>
+      <div class="pv-modal-block" id="modalForecast"></div>
       <div class="modal-section-title">Workflow Timeline</div>
       <div class="timeline-container" id="timelineContainer"></div>
       <!-- Action buttons in modal -->
@@ -273,6 +295,7 @@
 
   <script src="data.js"></script>
   <script src="dashboard.js"></script>
+  <script src="predictive.js"></script>
   <script src="notifications.js"></script>
 </body>
 

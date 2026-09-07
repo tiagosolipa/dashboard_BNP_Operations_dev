@@ -29,6 +29,7 @@
     "risk-warn":  { icon: "\u26a0",  label: "RISK WARNING",  color: "notif-orange", colorVar: "var(--orange)" },
     "risk-crit":  { icon: "\ud83d\udd34", label: "RISK CRITICAL", color: "notif-red",    colorVar: "var(--red)" },
     "user-action": { icon: "✅", label: "ACTION",        color: "notif-green",  colorVar: "var(--green)" },
+    "predictive": { icon: "◈", label: "PREDICTED",   color: "notif-blue",   colorVar: "var(--blue)" },
   };
 
   // ── Time Formatting ────────────────────────────────────────
@@ -478,6 +479,16 @@
     };
   }
 
+  // Forecast the whole book and let the predictive check raise anything
+  // that crossed a threshold. Deliberately not filtered by the UI: an
+  // alert must not disappear because a filter is applied.
+  function scanPredictive() {
+    if (!window.PredictiveOps || !window.checkPredictiveAlerts) return;
+    if (!window.TRANSACTIONS) return;
+    var horizon = window.predictHorizon || 120;
+    window.checkPredictiveAlerts(window.PredictiveOps.summarise(window.TRANSACTIONS, horizon));
+  }
+
   // ── Initialize ─────────────────────────────────────────────
   function init() {
     injectBellIcon();
@@ -488,10 +499,52 @@
       scanForAlerts();
     }, 1500);
 
+    // The first forecast runs a few seconds later. Both scans share one
+    // toast queue that keeps only the most recent entries, so firing them
+    // together let the forecast crowd out the live alerts; staggering
+    // shows current exceptions first, then what is coming.
+    setTimeout(function () {
+      scanPredictive();
+    }, 5000);
+
     // Periodic scan every 60 seconds
     setInterval(function () {
       scanForAlerts();
+      scanPredictive();
     }, SCAN_INTERVAL);
+
+    // ── Predictive escalations ───────────────────────────────
+    // Called from the predictive render pass. Only fires when a
+    // transaction is BOTH highly likely to breach and close enough to its
+    // cut-off to be actionable, and only once per severity band, so an
+    // item escalating high -> critical notifies twice at most.
+    window.checkPredictiveAlerts = function (summary) {
+      if (!summary || !summary.rows) return;
+      var fired = [];
+      summary.rows.forEach(function (f) {
+        if (f.probability < 80) return;
+        if (f.category === "breached") return;
+        // Imminence gate: a 90% risk a day out is not tonight's problem.
+        if (f.minutesToCutoff == null || f.minutesToCutoff < 0 || f.minutesToCutoff > 240) return;
+
+        var key = f.txId + ":predict-" + f.severity;
+        if (firedAlerts.has(key)) return;
+        firedAlerts.add(key);
+
+        var msg = f.txId + " has a " + f.probability + "% probability of missing cut-off in " +
+                  window.formatDuration(f.minutesToCutoff);
+        fired.push(createNotification(f.txId, "predictive", msg));
+      });
+
+      if (fired.length) {
+        fired.forEach(function (n) {
+          notifications.push(n);
+          enqueueToast(n);
+        });
+        updateBadge();
+        if (dropdownOpen) renderDropdown();
+      }
+    };
 
     // ── Expose push function for user action notifications ──
     window.pushActionNotification = function(txId, userName, actionLabel) {

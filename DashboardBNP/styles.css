@@ -1407,7 +1407,7 @@ body {
 
 .alert-table-head {
   display: grid;
-  grid-template-columns: 80px 160px 100px 110px 120px 90px 1fr 80px 130px 80px;
+  grid-template-columns: 80px 150px 92px 100px 104px 78px 1fr 74px 104px 118px 68px;
   gap: 0;
   background: var(--bg);
   padding: 7px 14px;
@@ -1426,7 +1426,7 @@ body {
 
 .alert-table-row {
   display: grid;
-  grid-template-columns: 80px 160px 100px 110px 120px 90px 1fr 80px 130px 80px;
+  grid-template-columns: 80px 150px 92px 100px 104px 78px 1fr 74px 104px 118px 68px;
   gap: 0;
   padding: 9px 14px;
   border-bottom: 1px solid var(--border-light);
@@ -3026,3 +3026,419 @@ body {
   color: #10b981;
 }
 
+/* ============================================================
+   PREDICTIVE OPERATIONS
+   Forward-looking layer above the Risk & Alert Monitor. Uses a
+   violet accent throughout so "predicted" never reads as "happening".
+   ============================================================ */
+
+:root {
+  --pv-accent: #5b3fd6;
+  --pv-accent-light: #f2efff;
+  --pv-accent-border: #d9d0fb;
+}
+
+.predict-section {
+  background: var(--surface);
+  border: 1px solid var(--pv-accent-border);
+  border-left: 3px solid var(--pv-accent);
+  border-radius: var(--radius);
+  padding: 14px 16px 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.predict-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.predict-section .section-title { color: var(--pv-accent); }
+
+.predict-badge {
+  background: var(--pv-accent-light);
+  color: var(--pv-accent);
+  border: 1px solid var(--pv-accent-border);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.predict-header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.predict-hz-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+.predict-hz-group {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.predict-hz {
+  background: var(--surface);
+  border: none;
+  border-right: 1px solid var(--border);
+  padding: 4px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.predict-hz:last-child { border-right: none; }
+.predict-hz:hover { background: var(--pv-accent-light); }
+.predict-hz.active {
+  background: var(--pv-accent);
+  color: #fff;
+}
+
+/* ── Forecast cards ──────────────────────────────────────── */
+.predict-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.pv-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: box-shadow 0.14s, transform 0.14s, border-color 0.14s;
+}
+.pv-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  border-color: var(--pv-accent-border);
+}
+.pv-card-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.pv-card-icon { font-size: 13px; }
+.pv-card-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-secondary);
+  line-height: 1.25;
+}
+.pv-card-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.pv-card-value {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+.pv-card-pct { font-size: 15px; font-weight: 700; }
+.pv-card-value-pred { color: var(--pv-accent); }
+.pv-card-arrow { color: var(--text-muted); font-size: 15px; font-weight: 700; }
+.pv-card-unit {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.pv-card-foot {
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.pv-card-alert  { border-left: 3px solid var(--red);    background: var(--red-light); }
+.pv-card-alert .pv-card-value { color: var(--red); }
+.pv-card-warn   { border-left: 3px solid var(--orange); background: var(--orange-light); }
+.pv-card-manual { border-left: 3px solid var(--purple); background: var(--purple-light); }
+.pv-card-ok     { border-left: 3px solid var(--green); }
+
+/* ── Watchlist table ────────────────────────────────────── */
+.pv-table {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+.pv-table-head,
+.pv-row {
+  display: grid;
+  grid-template-columns: 88px 168px 100px 96px 108px 84px 1fr 104px;
+  align-items: center;
+}
+.pv-table-head {
+  background: var(--bg);
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.pv-row {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-light);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.pv-row:last-child { border-bottom: none; }
+.pv-row:hover { background: var(--pv-accent-light); }
+
+.pv-row.pv-critical { border-left-color: var(--red); }
+.pv-row.pv-high     { border-left-color: var(--orange); }
+.pv-row.pv-medium   { border-left-color: var(--yellow); }
+.pv-row.pv-low      { border-left-color: var(--border); }
+
+/* Probability */
+.pv-prob-cell { display: flex; flex-direction: column; gap: 3px; padding-right: 10px; }
+.pv-prob-num {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.pv-prob-pct { font-size: 9.5px; font-weight: 700; color: var(--text-muted); }
+.pv-prob-bar-wrap {
+  height: 3px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.pv-prob-bar { display: block; height: 100%; border-radius: 2px; background: var(--text-muted); }
+.pv-critical .pv-prob-bar { background: var(--red); }
+.pv-critical .pv-prob-num { color: var(--red); }
+.pv-high .pv-prob-bar     { background: var(--orange); }
+.pv-high .pv-prob-num     { color: #d98200; }
+.pv-medium .pv-prob-bar   { background: var(--yellow); }
+.pv-low .pv-prob-bar      { background: var(--blue); }
+
+.pv-tx { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.pv-txid { font-weight: 700; color: var(--blue); font-size: 11px; }
+.pv-client { color: var(--text-muted); font-size: 10px; }
+.pv-eur { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Prediction category chip */
+.pv-cat {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.pf-miss     { background: #fdecea; color: #c62828; }
+.pf-window   { background: #f3eeff; color: #6a35d1; }
+.pf-stalled  { background: #eceff1; color: #455a64; }
+.pf-overrun  { background: var(--orange-light); color: #b26a00; }
+.pf-manual   { background: var(--purple-light); color: var(--purple); }
+.pf-breached { background: #fdecea; color: #b71c1c; }
+.pf-ok       { background: var(--green-light); color: var(--green); }
+
+/* Cut-off proximity */
+.pv-when { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pv-when-soon { color: var(--red); }
+.pv-when-mid  { color: #d98200; }
+.pv-when-far  { color: var(--text-secondary); }
+.pv-when-late { color: var(--red); }
+.pv-when-none { color: var(--text-muted); font-weight: 600; font-style: italic; }
+
+.pv-why {
+  color: var(--text-secondary);
+  font-size: 10.5px;
+  line-height: 1.35;
+  padding-right: 10px;
+}
+.pv-no-action { color: var(--text-muted); font-size: 10px; font-weight: 600; }
+
+.pv-empty {
+  padding: 14px;
+  background: var(--green-light);
+  border: 1px solid #c8e6c9;
+  border-radius: var(--radius-sm);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+}
+.pv-more {
+  padding: 7px 14px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ── Compact cell in the Risk & Alert Monitor ───────────── */
+.al-forecast { padding-right: 8px; }
+.pv-mini {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1.15;
+}
+.pv-mini-prob {
+  font-size: 11.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.pv-mini-cat {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+}
+.pv-mini.pv-critical .pv-mini-prob { color: var(--red); }
+.pv-mini.pv-high .pv-mini-prob     { color: #d98200; }
+.pv-mini.pv-medium .pv-mini-prob   { color: #b26a00; }
+.pv-mini-ok,
+.pv-mini-breached {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.pv-mini-ok { color: var(--green); }
+.pv-mini-breached { color: #b71c1c; }
+.pv-forecast-head { display: flex; align-items: center; gap: 3px; }
+
+/* ── Modal forecast block ───────────────────────────────── */
+.pv-modal-block { margin-bottom: 4px; }
+.pv-modal-ok {
+  padding: 12px 14px;
+  background: var(--green-light);
+  border: 1px solid #c8e6c9;
+  border-radius: var(--radius-sm);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+}
+.pv-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: var(--pv-accent-light);
+  border: 1px solid var(--pv-accent-border);
+  border-bottom: none;
+}
+.pv-modal-head.pv-critical { background: var(--red-light);    border-color: #f5c6c2; }
+.pv-modal-head.pv-high     { background: var(--orange-light); border-color: #f8dda8; }
+.pv-modal-head.pv-medium   { background: var(--yellow-light); border-color: #f6e3a8; }
+.pv-modal-prob {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.pv-modal-head.pv-critical .pv-modal-prob { color: var(--red); }
+.pv-modal-head.pv-high .pv-modal-prob     { color: #d98200; }
+.pv-modal-headtext { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.pv-modal-sev {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+}
+
+.pv-modal-factors {
+  border: 1px solid var(--border);
+  border-top: none;
+  background: var(--surface);
+}
+.pv-factor {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 11.5px;
+}
+.pv-factor:last-child { border-bottom: none; }
+.pv-factor-lbl { color: var(--text-secondary); }
+.pv-factor-val {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.pv-factor-detail {
+  font-weight: 600;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-variant-numeric: normal;
+}
+.pv-factor-total {
+  background: var(--bg);
+  font-size: 12px;
+}
+.pv-factor-total .pv-factor-lbl { font-weight: 700; color: var(--text-primary); }
+.pv-factor-emph .pv-factor-val { color: var(--red); }
+.pv-factor-muted .pv-factor-lbl,
+.pv-factor-muted .pv-factor-val { color: var(--text-muted); font-weight: 600; }
+
+.pv-modal-rec {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  background: var(--pv-accent-light);
+  border: 1px solid var(--pv-accent-border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.pv-rec-lbl {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--pv-accent);
+}
+.pv-rec-txt { font-size: 11.5px; color: var(--text-primary); line-height: 1.45; }
+
+/* ── Methodology popover ────────────────────────────────── */
+.pv-popover { width: 400px; }
+.pv-popover .risk-pop-title { color: var(--pv-accent); }
+
+/* ── Predictive notification colour ─────────────────────── */
+.notif-blue { border-left-color: var(--blue) !important; }
+.notif-toast.notif-blue { border-left: 3px solid var(--blue); }
+.notif-item.notif-blue .notif-item-label,
+.notif-blue .notif-toast-label { color: var(--blue); }
+
+/* ── Narrow viewports ───────────────────────────────────── */
+@media (max-width: 1400px) {
+  .predict-cards { grid-template-columns: repeat(2, 1fr); }
+  .pv-table-head,
+  .pv-row { grid-template-columns: 80px 150px 92px 88px 100px 78px 1fr 96px; }
+}

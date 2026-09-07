@@ -462,6 +462,10 @@ function renderAlerts(data) {
           Risk Score
           <button class="risk-info-btn" onclick="toggleRiskPopover(this)" title="How is this calculated?">&#9432;</button>
         </span>
+        <span class="pv-forecast-head">
+          Forecast
+          <button class="risk-info-btn" onclick="togglePredictPopover(this)" title="How is this predicted?">&#9432;</button>
+        </span>
         <span>Action</span>
         <span>Last Action By</span>
       </div>
@@ -505,6 +509,7 @@ function renderAlerts(data) {
             </div>
             <span class="al-score-val">${tx.riskScore}</span>
           </span>
+          <span class="al-forecast">${window.predictAlertCell ? window.predictAlertCell(tx) : ""}</span>
           <span class="al-action" onclick="event.stopPropagation()">${getActionBtn(tx)}</span>
           <span class="al-owner">${getOwnerBadge(tx)}</span>
         </div>`;
@@ -677,6 +682,9 @@ function openModal(tx) {
   const actEl = document.getElementById("modalActions");
   if (actEl) actEl.innerHTML = getModalActions(tx);
 
+  // ── Predictive forecast block ────────────────────────────
+  if (window.renderModalForecast) window.renderModalForecast(tx);
+
   // ── Render Activity History / Audit Trail ────────────────
   renderAuditTrail(tx);
 
@@ -696,6 +704,7 @@ function render() {
   const filtered = getFiltered();
   renderKPIs(filtered);
   renderStageErrors(filtered);
+  if (window.renderPredictive) window.renderPredictive(filtered);
   renderAlerts(filtered);
   renderTable(filtered);
 }

@@ -464,6 +464,12 @@ seed.forEach(tx => {
 window.TRANSACTIONS = seed;
 window.NOW_TS = NOW;
 
+// Expected stage durations and asset scaling — read by the predictive
+// engine so its forecasts use the same SLA basis as the generator.
+window.STAGE_SLA = STAGE_SLA;
+window.ASSET_MULTIPLIER = ASSET_MULTIPLIER;
+window.STAGE_RISK_WEIGHT = STAGE_RISK_WEIGHT;
+
 // ── Dynamic Risk Recalculation ────────────────────────────────
 // Recomputes all time-sensitive fields for every transaction based on
 // the REAL current system time — called before each render and on a

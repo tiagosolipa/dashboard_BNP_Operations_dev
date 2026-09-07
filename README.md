@@ -20,7 +20,8 @@ Designed for operations teams who need to triage and resolve issues in real time
 - **Risk Score Filtering** — Filter alerts by Low / Med / High / V.High / Critical
 - **Transaction Register** — Full transaction list with workflow timeline per transaction
 - **Activity History** — Per-transaction log of actions taken
-- **Notification System** — Real-time bell icon notifications and toast pop-ups for overdue, cut-off, and risk alerts
+- **Predictive Operations** — Forward-looking layer that forecasts which transactions will breach before they start alerting, by comparing time already spent in a stage against the stage's expected duration and the time left to cut-off. Each forecast carries a probability, a full arithmetic breakdown of how it was derived, and a recommended action
+- **Notification System** — Real-time bell icon notifications and toast pop-ups for overdue, cut-off, risk, and predictive alerts
 - **Role-based Profiles** — Switch between Ops Manager and Project Manager roles
 
 ## Filters
